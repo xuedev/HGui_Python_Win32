@@ -1,0 +1,62 @@
+<HTML>
+ <HEAD>
+ <meta charset="UTF-8">
+
+<script type="text/javascript" src="js/jquery-1.8.0.min.js"></script>
+<script type="text/javascript" src="js/jquery.easyui.min.js"></script>
+<script src="js/highcharts.js"></script>
+<script src="js/modules/exporting.js"></script>
+<script type="text/javascript" src="js/comm.js"></script>
+	<script type="text/javascript">
+		$(function (){
+			if(confirm("退出本程序之后，后台会无法监控本终端的状态，请确认是否要退出？")){
+				external.Close("");
+			}else{
+				top.tab.tabs('close',"退出程序");
+			}
+		});
+		
+	</script>
+
+  <TITLE></TITLE>
+ </HEAD>
+
+ <BODY>
+
+<style type="text/css">
+<!--
+body,div,p,ul,li,font,span,td,th{
+font-size:10pt;
+line-height:175%;
+}
+table{
+border-top-width: 1px;
+border-right-width: 1px;
+border-bottom-width: 0px;
+border-left-width: 1px;
+border-top-style: solid;
+border-right-style: solid;
+border-bottom-style: none;
+border-left-style: solid;
+border-top-color: #CCCCCC;
+border-right-color: #CCCCCC;
+border-bottom-color: #CCCCCC;
+border-left-color: #CCCCCC;
+}
+td{
+border-bottom-width: 1px;
+border-bottom-style: solid;
+border-bottom-color: #CCCCCC;
+}
+.EditCell_TextBox {
+width: 90%;
+border:1px solid #0099CC;
+}
+.EditCell_DropDownList {
+width: 90%;
+}
+-->
+</style>
+
+</BODY>
+</HTML>

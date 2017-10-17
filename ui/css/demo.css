@@ -1,0 +1,15 @@
+* {
+	FONT-SIZE: 12px
+}
+BODY {
+	PADDING-BOTTOM: 20px; MARGIN: 0px; PADDING-LEFT: 20px; PADDING-RIGHT: 20px; FONT-FAMILY: helvetica, tahoma, verdana, sans-serif; FONT-SIZE: 13px; PADDING-TOP: 20px
+}
+H2 {
+	MARGIN: 0px 0px 15px; FONT-SIZE: 18px; FONT-WEIGHT: bold
+}
+.demo-info {
+	PADDING-BOTTOM: 12px; PADDING-LEFT: 12px; PADDING-RIGHT: 12px; BACKGROUND: #fffee6; COLOR: #8f5700; PADDING-TOP: 12px
+}
+.demo-tip {
+	WIDTH: 16px; FLOAT: left; HEIGHT: 16px; MARGIN-RIGHT: 8px
+}

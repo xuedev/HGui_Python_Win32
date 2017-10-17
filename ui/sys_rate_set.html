@@ -1,0 +1,161 @@
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<script type="text/javascript" src="js/jquery-1.8.0.min.js"></script>
+<script src="js/highcharts.js"></script>
+
+<script src="js/hgui.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/json2.js"></script>
+<script type="text/javascript">
+	var periodTime = 1000;
+	var dataSeries;
+	var dataSeries1;
+	var count = -60;
+	
+	function getCpuRateInfo() {
+				var periodTime = 1000;
+				RunAsync('Test','GetArmStateInfo','',function(data){
+					try{handleCpuRate(data)}catch(e){};
+				});
+	}
+
+
+	function init(d,name,d1,name1){
+			$('#container').highcharts({
+				chart: {
+					type: 'spline',
+					animation: Highcharts.svg, // don't animate in old IE
+					marginRight: 10,
+					events: {
+						load: function() {
+		
+							// set up the updating of the chart each second
+							dataSeries = this.series[0];
+							dataSeries1 = this.series[1];
+							
+						}
+					}
+				},
+				title: {
+					text: ''
+				},
+				xAxis: {
+					type: 'datetime',
+					tickPixelInterval: 100
+				},
+				yAxis: {
+					 min: 0,
+					 max:100,
+					title: {
+						text: name+"/"+name1
+					},
+					plotLines: [{
+						value: 0,
+						width: 1,
+						color: '#808080'
+					}]
+				},
+				tooltip: {
+					formatter: function() {
+							return '<b>'+ this.series.name +'</b><br/>'+
+							Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) +'<br/>'+
+							Highcharts.numberFormat(this.y, 2);
+					}
+				},
+				 legend: {
+					layout: 'vertical',
+					align: 'right',
+					verticalAlign: 'top',
+					x: -10,
+					y: -15,
+					borderWidth: 0
+				},
+				exporting: {
+					enabled: false
+				},
+				series: [{
+					name: name,
+					data: (function() {
+						// generate an array of random data
+						var data = [],
+							time = (new Date()).getTime(),
+							i;
+		
+						for (i = count; i <= 0; i++) {
+							data.push({
+								x: time + i * 1000,
+								y: -1//Math.random()
+							});
+						}
+						return data;
+					})()
+					},
+					{
+					name: name1,
+					data: (function() {
+						// generate an array of random data
+						var data = [],
+							time = (new Date()).getTime(),
+							i;
+		
+						for (i = count; i <= 0; i++) {
+							data.push({
+								x: time + i * 1000,
+								y: -1
+							});
+						}
+						return data;
+					})()
+				}]
+			});
+	}
+
+	function handleCpuRate(data){
+		try{
+			var y =data.split(",")[0]-0;
+			var y1 =data.split(",")[1]-0;
+			var x = (new Date()).getTime(); // current time
+			dataSeries.addPoint([x, y], true, true);
+			dataSeries1.addPoint([x, y1], true, true);
+
+			setTimeout("getCpuRateInfo();",1000);
+			
+			//**/
+		}catch(e){
+			
+		}
+		
+
+	}
+	
+		$(function () {
+				$(document).ready(function() {
+					Highcharts.setOptions({
+						global: {
+							useUTC: false
+						}
+					});
+				});
+				init(0,"CPU占用率（%）",0,"内存占用率（%）");
+				getCpuRateInfo();
+
+			});
+			
+		</script>
+
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title></title>
+
+		
+	</head>
+	<body>
+
+<div id="title" style="min-width: 400px;" align="center">系统核心数据</div>
+<div id="container" style="min-width: 300px; height: 300px; margin: 0 auto"></div>
+<div align="center">
+	
+</div>
+	</body>
+</html>

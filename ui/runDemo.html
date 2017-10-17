@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>示例程序</title>
+		<link rel="stylesheet" type="text/css" href="themes/metro/easyui.css">
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="css/style.css" media="screen" type="text/css" />
+
+		<script type="text/javascript" src="js/jquery-1.8.0.min.js"></script>
+		<script type="text/javascript" src="js/jquery.easyui.min.js"></script>
+		<script src="js/menu.js"></script>
+	
+		<script src="js/hgui.js"></script>
+		<script src="js/ui.js"></script>
+		<style>
+			
+		</style>
+		<SCRIPT LANGUAGE="JavaScript">
+			function log(msg){
+				$("#jsRet").val(msg);
+			}
+			$(function(){
+				//测试同步调用DLL
+				$("#call_dll").click(function(){
+					alert(Run("Test","Test","good"));
+				});
+				//测试异步调用DLL
+				$("#call_dll_async").click(function(){
+					RunAsync("Test","Test","good",function(data){
+						alert(data);
+					});
+				});
+				$("#exeJs").click(function(){
+					eval($("#jsCommad").val());
+				});
+			});
+		</SCRIPT>
+	</head>
+	<body>
+		<!------------------------------------在下面添加内容------------------------------------------>
+		<div class="container">
+			<br>
+			<p>请输入要执行的测试JS：</p>
+			<br>
+			<textarea id='jsCommad' rows=5 cols=85>PythonAsync("http","runHttpFile",
+                             "https://www.xuedev.sinaapp.com/data/apps/python/test/test.py",
+                              function(data){
+				log(data);
+			});</textarea>
+			
+			<TABLE align="center" border=0 width="80%">
+			<TR>
+				<TD align="right">
+					<h3>
+							<a href="#" id="exeJs" class="btn btn-primary btn-lt">执行测试JS</a>
+				</h3>
+				</TD>
+			</TR>
+			
+			</TABLE>
+			<br>
+			<p>输出信息：</p>
+			<textarea id='jsRet' rows=10 cols=85></textarea>
+
+		</div>
+		<!-- /container -->
+		</div>
+	</body>
+</html>

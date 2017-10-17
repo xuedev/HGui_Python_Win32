@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>桌面监控</title>
+		<link rel="stylesheet" type="text/css" href="themes/metro/easyui.css">
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="css/style.css" media="screen" type="text/css" />
+
+		<script type="text/javascript" src="js/jquery-1.8.0.min.js"></script>
+		<script type="text/javascript" src="js/jquery.easyui.min.js"></script>
+		<script src="js/menu.js"></script>
+	
+		<script src="js/hgui.js"></script>
+		<script src="js/ui.js"></script>
+		<style>
+			
+		</style>
+		<SCRIPT LANGUAGE="JavaScript">
+
+			top.drawImg = function(data){
+				var src = "data:image/png;base64,"+data;
+				var w = screen.width;
+				var h = screen.height;
+
+				var height = 600*height/w;
+				$("#img").attr("height",height);
+				$("#img").attr("src",src);
+			}
+
+			top.connectLog = function(msg){
+				var d = new Date();
+				var str = d.getHours()+":"+d.getMinutes()+":"+d.getSeconds();
+				$("#msg").text(str+"  "+msg);
+				//if(msg.indexOf("无法")>-1)
+				//	return;
+				setTimeout("start()",800);
+			}
+
+			function start(){
+				PythonAsync("gather","startGrab",
+                             $("#ip").val(),
+							function(data){
+								console.log(data);
+								
+				});
+			}
+			$(function(){
+				
+
+			});
+		</SCRIPT>
+	</head>
+	<body>
+		<!------------------------------------在下面添加内容------------------------------------------>
+		<div class="container">
+			<p>
+				请输入服务端的IP地址：<INPUT TYPE="text" NAME="ip" id="ip" value="http://127.0.0.1:8000" width="450px" maxlength="50"><br>
+				<INPUT TYPE="button" VALUE="开启监控" ONCLICK="start();">
+			</p>
+			<p id="msg"></p>
+			
+
+			
+		</div>
+		<!-- /container -->
+		</div>
+	</body>
+</html>

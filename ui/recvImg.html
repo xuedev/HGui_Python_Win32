@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<title>示例程序</title>
+		<link rel="stylesheet" type="text/css" href="themes/metro/easyui.css">
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="css/style.css" media="screen" type="text/css" />
+
+		<script type="text/javascript" src="js/jquery-1.8.0.min.js"></script>
+		<script type="text/javascript" src="js/jquery.easyui.min.js"></script>
+		<script src="js/menu.js"></script>
+	
+		<script src="js/hgui.js"></script>
+		<script src="js/ui.js"></script>
+		<style>
+			
+		</style>
+		<SCRIPT LANGUAGE="JavaScript">
+			var ips = [];
+			function getImgObj(ip){
+				var pos = -1;
+				for(var i=0;i<ips.length;i++){
+					if(ips[i].ip == ip){
+						pos = i;
+					}
+				}
+				if(pos > -1){
+					return $("img[flag="+pos+"]");
+				}else{ //pos == -1
+					var str = "<hr><p>IP为【"+ip+"】的终端监控画面</p><img src=\"\" width=\"1000px\" height=\"1000px\" flag='"+ips.length+"'></img><hr>";
+					$(str).appendTo($(".container"));
+					var data = {};
+					data.ip = ip;
+					ips.push(data);
+					return $("img[flag="+(ips.length-1)+"]");
+				}
+			}
+			
+			top.drawImg = function(data){
+				var w = screen.width-0;
+				var h = screen.height-0;
+				var r = h/w;
+				var width = 1150;
+				var height = width*r;
+				var obj = getImgObj(data);
+				
+				obj.attr("width",width);
+				obj.attr("height",height);
+				obj.attr("height",height);
+				obj.attr("src","tmp/"+data+".png");
+			}
+
+			top.recvLog = function(param){
+				var d = new Date();
+				var str = d.getHours()+":"+d.getMinutes()+":"+d.getSeconds();
+				$("#msg").text(str+"  接受到客户端："+param.ip+" 发送的图片，"+param.msg);
+			}
+
+			function start(){
+				PythonAsync("gather","startGrab",
+                             "",
+							function(data){
+								$("#msg").text(data);
+				});
+			}
+			$(function(){
+				PythonAsync("server","flisten",
+                             "top.drawImg",
+                              function(data){
+							  $("#msg").text(data);
+							//alert("开始接收图片");
+							   console.log(data);
+				});
+
+			});
+		</SCRIPT>
+	</head>
+	<body>
+		<!------------------------------------在下面添加内容------------------------------------------>
+		<div class="container" id="c">
+		<p id="msg"></p>
+		<!--
+			<p id="msg"></p>
+			<p>开始接收实时画面：</p>
+			<canvas id="cvs" width="800" height="600">你的浏览器不支持canvas</canvas>
+			<!--
+			<img id="img" src="" width="1000px" height="1000px"></img>
+			-->
+
+		</div>
+		<!-- /container -->
+		</div>
+	</body>
+</html>

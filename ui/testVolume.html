@@ -1,0 +1,74 @@
+<HTML>
+ <HEAD>
+ <meta charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="css/demo.css">
+	<link rel="stylesheet" type="text/css" href="css/btn.css">
+	<script type="text/javascript" src="js/jquery-1.8.0.min.js"></script>
+	<script type="text/javascript" src="js/jquery.easyui.min.js"></script>
+	<script src="js/highcharts.js"></script>
+	<script src="js/modules/exporting.js"></script>
+	<script type="text/javascript" src="js/comm.js"></script>
+	<script src="js/json2.js"></script>
+	<script type="text/javascript" src="js/commCom.js"></script>
+	<script type="text/javascript">
+		$(function () {
+				
+			});
+	
+	function getVolumeValue(){
+		var RunCmd = getExeStr("HardwareUtils","GetVolume","","handleVolumeValue");
+		external.AsyncRun(RunCmd);
+	}
+	function setVolumeValue(data){
+		var RunCmd = getExeStr("HardwareUtils","SetVolume",data,"handleVolumeValue");
+		external.AsyncRun(RunCmd);
+	}
+	
+
+	function setJy(data){
+		var RunCmd = getExeStr("HardwareUtils","SetMute",data,"");
+		external.AsyncRun(RunCmd);
+	}
+	function ClearPrintJob(){
+		var RunCmd = getExeStr("HardwareUtils","ClearPrintJob","","");
+		external.AsyncRun(RunCmd);
+	}
+	
+	</script>
+
+  <TITLE></TITLE>
+ </HEAD>
+
+ <BODY>
+
+<style type="text/css">
+
+</style>
+
+<form id="form1" name="form1" method="post" action="">
+<br>
+
+<h5 align="center">音量设置测试</h5>
+<br>
+<table width="100%"  cellpadding="0" cellspacing="0" align="center" border =1>
+	<tr><td><INPUT TYPE="text" NAME="value1" id="value">
+	</td>
+	<td width="80%">
+	<button class="easyui-linkbutton" VALUE="" ONCLICK="getVolumeValue();">获取当前音量</button><br><br></td></tr>
+    <tr>
+	  <td><INPUT TYPE="text" NAME="value2" id="value" value="20"></td>
+	  <td  width="80%">
+	  <button TYPE="button" class="easyui-linkbutton" VALUE="" ONCLICK="setVolumeValue(document.getElementById('value2').value);">设置音量</button>
+		<button TYPE="button" class="easyui-linkbutton" VALUE="" ONCLICK="setJy(0);">开启声音</button>
+	   <button TYPE="button" class="easyui-linkbutton" VALUE="" ONCLICK="setJy(1);">静音</button>
+		
+		<button TYPE="button" class="easyui-linkbutton" VALUE="" ONCLICK="ClearPrintJob();">清除打印机缓存</button>
+
+	  </td>
+	 
+	</tr>
+</table>
+</BODY>
+</HTML>

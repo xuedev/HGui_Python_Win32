@@ -1,0 +1,8 @@
+{
+	"menus":[
+	{"id":"5000","title":"测试","js":"test.js"},
+	{"id":"5001","title":"测试1","js":"test1.js"},
+	{"id":"5002","title":"测试2","js":"test2.js"},
+	{"id":"5003","title":"测试3","js":"test3.js"}
+	]
+}

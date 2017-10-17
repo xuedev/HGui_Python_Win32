@@ -1,0 +1,217 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>HGui</title>
+	<link rel="stylesheet" type="text/css" href="themes/bootstrap/easyui.css">
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="css/style.css" media="screen" type="text/css" />
+
+	<script type="text/javascript" src="js/jquery-1.8.0.min.js"></script>
+	<script type="text/javascript" src="js/jquery.easyui.min.js"></script>
+	<script src="js/menu.js"></script>
+	<script src="js/bootstrap.min.js" type="text/javascript"></script>
+	<script src="js/bootstrap-modal.js" type="text/javascript"></script>
+	
+	<script src="js/hgui.js"></script>
+	<script src="js/ui.js"></script>
+	<style>
+		::-webkit-scrollbar
+		{
+			width: 0px;
+			height: 0px;
+		}
+		::-webkit-scrollbar-track-piece
+		{
+			background-color: #CCCCCC;
+			-webkit-border-radius: 6px;
+		}
+		::-webkit-scrollbar-thumb:vertical
+		{
+			height: 5px;
+			background-color: #999999;
+			-webkit-border-radius: 6px;
+		}
+		::-webkit-scrollbar-thumb:horizontal
+		{
+			width: 5px;
+			background-color: #CCCCCC;
+			-webkit-border-radius: 6px;
+		}
+	</style>
+	<script type="text/javascript">
+		
+
+		var tab;
+		//页面初始化时执行
+		$(function(){
+			//初始化界面
+			initUI();
+			
+			//初始化软件配置
+			initCfg();
+			
+			//初始化动态查询任务
+			initTask();
+			
+		});
+
+
+		function initTask(){
+
+		
+		}
+		function initCfg(){
+			
+		}
+
+		function addMenu(parent_id,menu_name,menu_url,menu_id){
+			var parent_menu = document.getElementById(parent_id);
+			var html = parent_menu.innerHTML;
+			parent_menu.innerHTML = html+'<p><a class="btn btn-danger btn-lt" id="'+menu_url.split(".")[0]+'."  onclick="top.action(this);" width="100px" >'+menu_name+'</a></p>';
+		}
+
+		function addMainMenu(menu_id,menu_name){
+			var parent_menu = document.getElementById("menus");
+			var html = parent_menu.innerHTML;
+			parent_menu.innerHTML = html+'<div id="'+menu_id+'" title="&nbsp;&nbsp'+menu_name+'"   style="padding:10px;"></div>';
+		}
+		function initMenus(){
+			queryData("menus","select * from menus order by position,id",handleQueryMenu);
+		}
+		function initButton(){
+			
+			$("#close").hover(function() {
+				$(this).attr("src","img/close_hover.png");
+			}, function() {
+				$(this).attr("src","img/close_release.png");
+			});
+
+			$("#max").hover(function() {
+				$(this).attr("src","img/max_hover.png");
+			}, function() {
+				$(this).attr("src","img/max_release.png");
+			});
+
+			$("#min").hover(function() {
+				$(this).attr("src","img/min_hover.png");
+			}, function() {
+				$(this).attr("src","img/min_release.png");
+			});
+
+		}
+		function initUI(){
+			initMenus();
+			initButton();
+
+			//external.ChangeMaxMin("max");
+			$('#tt').tabs({ 
+					fit: true,
+					onSelect:function(title,a){ 
+						//alert(title+' is selected'); 
+						//OnTabSelect(title);
+						//alert(this.html());
+						//alert(this.tabs);
+					} 
+						
+			});
+			openTab("测试调用","runDemo.html");
+			//setInterval(showTime,1000);
+			tab = $('#tt');
+		}
+
+		function action(e){
+			var id = e.id.split(".")[0];
+			if(id == "update"){
+				openTab(e.innerHTML,updateUrl);
+			}else if(id == "pzgl"){
+				openTab(e.innerHTML,pzglUrl);
+			}
+			else{
+				openTab(e.innerHTML,id+".html")
+			}
+
+			
+		}
+
+		function openTab(title,url){
+			var tab=$('#tt').tabs('exists',title);
+			if(tab){
+				//若存在，则直接打开
+				$('#tt').tabs('select',title);
+				//alert("'"+title+"' 窗口已打开，不能同时打开多个窗口！");
+			}else{
+				//否则创建
+				$('#tt').tabs('add',{
+					title:title,
+					content:"<iframe width='100%' height='100%'  id='"+url.split(".")[0]+"' frameborder='0' scrolling='auto'  src='"+url+"'></iframe>",
+					closable:true,
+					cache:true
+				});
+			}
+		}
+		
+		 /*
+		*刷新时间
+		*/
+		function showTime(){
+			var date=new Date();
+			$('#currDate').html();
+			$('#currDate').html(date.toLocaleString()+"&nbsp;&nbsp;");
+		}
+
+		function remove(){
+			var tab = $('#tt').tabs('getSelected');
+			if (tab){
+				var index = $('#tt').tabs('getTabIndex', tab);
+				$('#tt').tabs('close', index);
+			}
+		}
+		var showFlag = 1;
+		function show(){
+			if(showFlag == 1){
+				showFlag = 0;
+				external.ChangeMaxMin('max');
+			}else{
+				showFlag = 1;
+				external.ChangeMaxMin('restore');
+			}
+			
+		}
+
+	</script>
+
+</head>
+<body class="easyui-layout" style="padding: 0px;overflow:hidden;">
+	<!--
+	<div data-options="region:'north',border:false" style="padding:0px;">
+		<div id="title" style="margin-left:auto;margin-right:auto;background-image:URL('img/title.png');background-repeat:repeat-x;;min-width:570px;;height:35px;">					
+			<div id="text" style="width:auto;height:35px;position:absolute;top:-2px;left:10px;"><h4></h4></div>
+			<div id="min" style="background:url('img/min_hover.png') no-repeat;width:35px;;height:35px;position:absolute;top:10px;right:50px;"></div>
+			<div id="max" style="background:url('img/max_hover.png') no-repeat;width:35px;;height:35px;position:absolute;top:10px;right:20px;"></div>
+			<div id="close" style="background:url('img/close_hover.png') no-repeat;width:35px;;height:35px;position:absolute;top:10px;right:-10px;"></div>			
+		</div>
+	</div>
+	
+	-->
+	<div data-options="region:'west',split:false,title:'菜单',border:false" style="width:120px;padding:0px;" >
+		<div style="overflow: hidden;" id="menus" border="true"
+        fit="true">
+        
+		</div>
+	</div>
+	<!--
+	<div data-options="region:'south',border:false" style="height:35px;padding:5px;" align="right">
+		<span id="currDate" style="font-family: 微软雅黑; font-size: 10px; color: #000000; text-align: center;"></span>
+	</div>
+	-->
+	<div data-options="region:'center',border:false">
+		<div id="tt" style="border:0px" class="easyui-tabs" data-options="tools:'#tab-tools'" >
+		</div>
+	</div>
+	
+	<div data-options="region:'south',border:true" style="height:1px;padding:0px;">
+		<p id="msg">欢迎使用</p>
+	</div>
+</body>
+</html>

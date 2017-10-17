@@ -1,0 +1,11 @@
+.button_zdy{
+	width:250px;
+	height:64px;
+	font-size:26px;
+	font-weight:bold;
+	font-family:"ºÚÌå";
+	border:0px;
+	padding-left:10px;
+	color:#FFFFFF;
+	background:url('css/bt.gif') norepeat;
+}

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="themes/bootstrap/easyui.css">
+	<link rel="stylesheet" type="text/css" href="themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="css/demo.css">
+	<link rel="stylesheet" type="text/css" href="css/btn.css">
+	<script type="text/javascript" src="js/jquery-1.8.0.min.js"></script>
+	<script type="text/javascript" src="js/jquery.easyui.min.js"></script>
+	<script src="js/menu.js"></script>
+	<script src="js/hgui.js"></script>
+	<script src="js/ui.js"></script>
+	<script src="js/json2.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			//初始化界面
+			initMenuUI();
+			//top.document.getElementById("menus").innerHTML = "";
+			//top.initMenus();
+
+			
+		});
+		
+		function showAddMainMenu(){
+			$("#main_tab").show();
+			$("#main_tab").dialog({   
+				 title: '添加主菜单',   
+				 width: 300,   
+				 height: 200,   
+				 closed: false,   
+				 cache: false,   
+				 modal: true  
+			 });   
+
+		}
+		function showAddChildMenu(menu_id,menu_name){
+			//$("#child_tab").show();
+			$("#parent_menu_name").text(menu_name);
+			$("#parent_menu_id").text(menu_id);
+			$('#child_tab').show();
+			$("#child_tab").dialog({   
+				 title: '添加子菜单',   
+				 width: 300,   
+				 height: 200,   
+				 closed: false,   
+				 cache: false,   
+				 modal: true  
+			 });   
+
+		}
+
+		function addChildMenu(){
+			var menu_name = $("#child_menu_name").val();
+			var position = $("#child_position").val();
+			var menu_url = $("#child_menu_url").val();
+			var parent_id = $("#parent_menu_id").text();
+			if(menu_name.length<1){
+				alert("请输入菜单名称");
+				return;
+			}
+			if(position.length<1){
+				alert("请选择菜单位置");
+				return;
+			}
+			if(menu_url.length<1){
+				alert("请输入菜单地址");
+				return;
+			}
+
+			queryMaxValue("menus","menus",function(data){
+				var tmp = data-0;
+				var str = (tmp+1)+"";
+				insertData("menus","menus@"+str+'@'+menu_name+"@"+menu_url+"@"+parent_id+"@"+position,function (data){
+					document.location.href='cdsz.html';
+				});
+			});
+			
+
+		}
+		
+		function showupdateMenu(menu_id,menu_name,menu_url,position){
+			$("#main_menu_name_update").val(menu_name);
+			$("#main_position_update").val(position);
+			$("#main_menu_id_update").val(menu_id);
+			$("#main_menu_url_update").val(menu_url);
+			$("#update_tab").show();
+			
+			$("#update_tab").dialog({   
+				 title: '修改菜单',   
+				 width: 300,   
+				 height: 200,   
+				 closed: false,   
+				 cache: false,   
+				 modal: true  
+			 });   
+
+			
+		}
+		function updateMenu(){
+			var id = $("#main_menu_id_update").val();
+			var menu_name = $("#main_menu_name_update").val();
+			var position = $("#main_position_update").val();
+			var menu_url = $("#main_menu_url_update").val();
+			
+			var sql = "update menus set menu_name='"+menu_name+"',position="+position+",menu_url='"+menu_url+"' where id="+id;
+			exeSql("menus",sql,function (data){
+				document.location.href='cdsz.html';
+			});
+		}
+
+		function addMainMenu(node){
+			var menu_name = $("#main_menu_name").val();
+			var position = $("#main_position").val();
+			if(menu_name.length<1){
+				alert("请输入菜单名称");
+				return;
+			}
+			if(position.length<1){
+				alert("请选择菜单位置");
+				return;
+			}
+
+			queryMaxValue("menus","menus",function(data){
+				var tmp = data-0;
+				var str = (tmp+1)+"";
+				insertData("menus","menus@"+str+'@'+menu_name+"@ @0@"+position,function (data){
+					document.location.href='cdsz.html';
+				});
+
+			});
+		}
+		function delMenu(id){
+			if(confirm("是否删除该菜单？")){
+				var sql = "delete from menus where id='"+id+"' or menu_parent='"+id+"'";
+				exeSql("menus",sql,function (data){
+				document.location.href='cdsz.html';
+			});
+			}
+			}
+		function addMenu(node){
+			var id = $(node.parentNode.parentNode).attr("node-id");
+			alert(id);
+		}
+
+		top.setMenu = function(parent_id,menu_name,menu_url,menu_id,position){
+			var parent_menu = document.getElementById(parent_id+"_children");
+			var html = parent_menu.innerHTML;
+			parent_menu.innerHTML = html+'<li id="'+menu_url.split(".")[0]+'"><span>'+menu_name+' <a href="#" onclick="delMenu('+menu_id+')">删除该菜单</a>  <a href="#" onclick="showupdateMenu('+menu_id+',\''+menu_name+'\',\''+menu_url+'\','+position+')">修改该菜单</a></span></li>';
+		}
+
+		top.setMainMenu = function(menu_id,menu_name,menu_url,position){
+			var parent_menu = document.getElementById("menus");
+			var html = parent_menu.innerHTML;
+			parent_menu.innerHTML = html+'<li id="'+menu_id+'"><span>'+menu_name+'  <a href="#" onclick="delMenu('+menu_id+')">删除该菜单</a>   <a href="#" onclick="showupdateMenu('+menu_id+',\''+menu_name+'\',\''+menu_url+'\','+position+')">修改该菜单</a>   <a href="#" onclick="showAddChildMenu('+menu_id+',\''+menu_name+'\')">添加子菜单</a></span><ul id="'+menu_id+'_children"></ul></div>';
+		}
+		function initMenusData(){
+			queryData("menus","select * from menus order by position,id",top.handleQueryMenu_Update);
+		}
+		
+		function initMenuUI(){
+			initMenusData();
+		}
+		function applyUI(){
+			$('#menus').tree({
+				onClick:function(node){
+						//alert(node.id);
+				  }
+			});
+		}
+
+
+	</script>
+
+</head>
+<body>
+<h5 align="center"><button class="easyui-linkbutton" VALUE="" ONCLICK="top.document.location.href='index.html';">刷新程序菜单</button>
+	<br>
+	<br>
+	<br></h5>
+	
+	<TABLE width="100%" >
+	<TR>
+		<TD>
+			<ul id="menus">
+				<li >
+					<span><a href="#"  onclick="showAddMainMenu();">添加主菜单</a></span>
+				</li>
+			</ul>
+		</TD>
+		<TD width="50%">
+				<table width="100%" border="0" cellpadding="0" cellspacing="0" id="main_tab" style="display:none">
+					<tr>
+					  <td  >菜单名称：</td>
+					  <td  ><INPUT TYPE="text" id="main_menu_name" NAME=""></td>
+					</tr>
+					<tr>
+					  <td  >菜单位置：</td>
+					  <td  >
+							<SELECT id="main_position">
+								<OPTION value=""> </OPTION>
+								<OPTION value="1">同级第1位</OPTION>
+								<OPTION value="2">同级第2位</OPTION>
+								<OPTION value="3">同级第3位</OPTION>
+								<OPTION value="4">同级第4位</OPTION>
+								<OPTION value="5">同级第5位</OPTION>
+								<OPTION value="6">同级第6位</OPTION>
+								<OPTION value="7">同级第7位</OPTION>
+								<OPTION value="8">同级第8位</OPTION>
+								<OPTION value="9">同级第9位</OPTION>
+							</SELECT>
+					  </td>
+					</tr>
+					<tr>
+					  <td  colspan=2 align="center">
+							<INPUT TYPE="button" VALUE="添加" ONCLICK="addMainMenu();">
+					  </td>
+					</tr>
+
+				</table>
+
+				
+				<table width="100%" border="0" cellpadding="0" cellspacing="0" id="child_tab" style="display:none">
+					<tr>
+					  <td  >父菜单名称：</td>
+					  <td  ><div id="parent_menu_name"></div></td>
+					</tr>
+					<tr>
+					  <td  >父菜单ID：</td>
+					  <td  ><div id="parent_menu_id"></div></td>
+					</tr>
+
+					<tr>
+					  <td  >菜单名称：</td>
+					  <td  ><INPUT TYPE="text" id="child_menu_name" NAME=""></td>
+					</tr>
+					<tr>
+					  <td  >菜单地址：</td>
+					  <td  ><INPUT TYPE="text" id="child_menu_url" NAME=""></td>
+					</tr>
+
+					<tr>
+					  <td  >菜单位置：</td>
+					  <td  >
+							<SELECT id="child_position">
+								<OPTION value=""> </OPTION>
+								<OPTION value="1">同级第1位</OPTION>
+								<OPTION value="2">同级第2位</OPTION>
+								<OPTION value="3">同级第3位</OPTION>
+								<OPTION value="4">同级第4位</OPTION>
+								<OPTION value="5">同级第5位</OPTION>
+								<OPTION value="6">同级第6位</OPTION>
+								<OPTION value="7">同级第7位</OPTION>
+								<OPTION value="8">同级第8位</OPTION>
+								<OPTION value="9">同级第9位</OPTION>
+							</SELECT>
+					  </td>
+					</tr>
+					<tr>
+					  <td  colspan=2 align="center">
+							<INPUT TYPE="button" VALUE="添加" ONCLICK="addChildMenu();">
+					  </td>
+					</tr>
+
+				</table>
+
+				<table width="100%" border="0" cellpadding="0" cellspacing="0" id="update_tab" style="display:none">
+				<tr>
+					  <td  >菜单名称：</td>
+					  <td  ><INPUT id="main_menu_name_update" TYPE="text" NAME=""></td>
+					</tr>
+					<tr>
+					  <td  >菜单ID：</td>
+					  <td  ><INPUT id="main_menu_id_update" TYPE="text" NAME="" readonly></td>
+					</tr>
+					<tr>
+					  <td  >菜单地址：</td>
+					  <td  ><INPUT id="main_menu_url_update" TYPE="text" NAME=""></td>
+					</tr>
+
+					<tr>
+					  <td  >菜单位置：</td>
+					  <td  >
+							<SELECT id="main_position_update">
+								<OPTION value=""> </OPTION>
+								<OPTION value="1">同级第1位</OPTION>
+								<OPTION value="2">同级第2位</OPTION>
+								<OPTION value="3">同级第3位</OPTION>
+								<OPTION value="4">同级第4位</OPTION>
+								<OPTION value="5">同级第5位</OPTION>
+								<OPTION value="6">同级第6位</OPTION>
+								<OPTION value="7">同级第7位</OPTION>
+								<OPTION value="8">同级第8位</OPTION>
+								<OPTION value="9">同级第9位</OPTION>
+							</SELECT>
+					  </td>
+					</tr>
+					<tr>
+					  <td  colspan=2 align="center">
+							<INPUT TYPE="button" VALUE="修改" ONCLICK="updateMenu();">
+					  </td>
+					</tr>
+
+				</table>
+
+
+		</TD>
+	</TR>
+	</TABLE>
+</body>
+</html>

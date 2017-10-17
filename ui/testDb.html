@@ -1,0 +1,65 @@
+<HTML>
+ <HEAD>
+ <meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="themes/bootstrap/easyui.css">
+	<script type="text/javascript" src="js/jquery-1.8.0.min.js"></script>
+	<script type="text/javascript" src="js/jquery.easyui.min.js"></script>
+	<script src="js/menu.js"></script>
+	
+	<script src="js/hgui.js"></script>
+	<script src="js/ui.js"></script>
+
+	<script type="text/javascript">
+		function query(){
+				top.queryCallback = function(data){
+					alert("返回的结果字符串："+data);
+					var json = eval(data);
+					//返
+
+					var len = json.length;
+					alert("返回数据的条数："+len);
+					for(var i=0;i<len;i++){
+						//逐条便利
+						alert("name:"+json[i].name);
+						//alert("je:"+json[i].je);
+					}
+				}
+				//第一个参数为数据库文件名如：test.sdb
+				//第二个参数是sql
+				//第三个参数是回调函数
+				queryData("test","select * from table1",top.queryCallback);
+
+			}
+
+		function insert(){
+			top.insertCallBack = function(data){
+				alert(data);
+			}
+			
+			//第一个参数为数据库文件明，如test.sdb
+			//第二个参数格式是：数据库表@第一列数据@第二列数据.......以此类推
+			insertData("test","table1@test2@好",top.insertCallBack);
+		}
+		
+		function exesql(){
+			top.exesqlCallBack = function(data){
+				alert(data);
+			}
+			exeSql("test","delete from table1 where name='test2'",top.exesqlCallBack);
+		}
+		</script>
+
+  <TITLE></TITLE>
+ </HEAD>
+
+ <BODY>
+
+<form id="form1" name="form1" method="post" action="">
+<h5 align="center">数据组件测试</h5>
+	<a href="#" class="easyui-linkbutton" data-options="iconCls:'search'" ONCLICK="query();">查询</a>
+	<a href="#" class="easyui-linkbutton" data-options="iconCls:'add'" ONCLICK="insert();">插入</a>
+	<a href="#" class="easyui-linkbutton" data-options="iconCls:'add'" ONCLICK="exesql();">执行SQL</a>
+
+</script>
+</BODY>
+</HTML>

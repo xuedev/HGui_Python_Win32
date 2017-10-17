@@ -1,0 +1,194 @@
+﻿<HTML>
+ <HEAD>
+ <meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" href="" />
+
+	<style type="text/css">
+
+	<!--
+
+.clear { /* generic container (i.e. div) for floating buttons */
+    overflow: hidden;
+    width: 100%;
+}
+
+a.button {
+    background: transparent url('img/bg_button_a.gif') no-repeat scroll top right;
+    color: #444;
+    display: block;
+    float: left;
+    font: normal 12px arial, sans-serif;
+    height: 24px;
+    margin-right: 6px;
+    padding-right: 18px; /* sliding doors padding */
+    text-decoration: none;
+}
+
+a.button span {
+    background: transparent url('img/bg_button_span.gif') no-repeat;
+    display: block;
+    line-height: 14px;
+    padding: 5px 0 5px 18px;
+} 
+
+a.button:active {
+    background-position: bottom right;
+    color: #000;
+    outline: none; /* hide dotted outline in Firefox */
+}
+
+a.button:active span {
+    background-position: bottom left;
+    padding: 6px 0 4px 18px; /* push text down 1px */
+} 
+
+	-->	
+	</style>
+<link rel="stylesheet" type="text/css" href="themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="themes/icon.css">
+	<link rel="stylesheet" type="text/css" href="css/demo.css">
+	<link rel="stylesheet" type="text/css" href="css/btn_zdy.css">
+	<script type="text/javascript" src="js/jquery-1.8.0.min.js"></script>
+	<script type="text/javascript" src="js/jquery.easyui.min.js"></script>
+	<script src="js/highcharts.js"></script>
+	<script src="js/modules/exporting.js"></script>
+	<script type="text/javascript" src="js/comm.js"></script>
+	<script src="js/json2.js"></script>
+
+	<script type="text/javascript">
+		$(function () {
+				getVolumeValue();
+				var str = "";
+				str = top.currVolume+"";
+				$("#slider").slider("setValue",str);
+			});
+	function handleSliderChange(data){
+		setVolumeValue(data);
+	}
+	function getVolumeValue(){
+		var RunCmd = getExeStr("HardwareUtils","GetVolume","","handleCurrVolume");
+		external.Run(RunCmd);
+	}
+	function setVolumeValue(data){
+		var RunCmd = getExeStr("HardwareUtils","SetVolume",data,"handleCurrVolume");
+		external.Run(RunCmd);
+	}
+	
+	function addVolumeValue(){
+		top.currVolume = top.currVolume+2;
+		var str = "";
+		str = top.currVolume+"";
+		var RunCmd = getExeStr("HardwareUtils","SetVolume",str,"handleCurrVolume");
+		external.AsyncRun(RunCmd);
+	}
+
+	function decVolumeValue(){
+		top.currVolume = top.currVolume-2;
+		var str = "";
+		str = top.currVolume+"";
+		var RunCmd = getExeStr("HardwareUtils","SetVolume",str+"","handleCurrVolume");
+		external.AsyncRun(RunCmd);
+	}
+
+
+
+	function setJy(data){
+		var RunCmd = getExeStr("HardwareUtils","SetMute",data,"");
+		external.AsyncRun(RunCmd);
+	}
+	function ClearPrintJob(){
+		var RunCmd = getExeStr("HardwareUtils","ClearPrintJob","","");
+		external.AsyncRun(RunCmd);
+	}
+	
+	function ClearPrintJob(){
+		var RunCmd = getExeStr("HardwareUtils","ClearPrintJob","","js:alert('清理成功')");
+		external.AsyncRun(RunCmd);
+	}
+	
+	function RunDate(){
+		WinExec("rundll32.exe shell32.dll,Control_RunDLL timedate.cpl,,0");
+	}
+	</script>
+	
+  <TITLE></TITLE>
+ </HEAD>
+
+ <BODY>
+
+<style type="text/css">
+
+</style>
+
+<form id="form1" name="form1" method="post" action="" >
+<br>
+
+<h5 align="center">ARM终端快捷操作</h5>
+<br>
+<table width="100%"  cellpadding="0" cellspacing="0" border='0'>
+    <tr>
+	  <td >
+	  开关机管理
+	  <br>
+		
+	  </td>
+	  <td width="80%">
+	  <button class="button_zdy" style="background:url('css/bt.gif') norepeat" href="#" ONCLICK="showdown()">关闭电脑</button>
+	  <button class="button_zdy" style="background:url('css/bt.gif') norepeat" href="#" ONCLICK="reboot();">重启电脑</button>
+      <br>
+	  </td>
+	</tr>
+ 
+<tr>
+	<td >
+	  其他快捷功能
+	  <br><br>
+</td>
+	  <td  width="80%">
+	  <button class="button_zdy" style="background:url('css/bt.gif') norepeat" href="#" ONCLICK="ClearSys();">清理系统垃圾</button>
+	  <button class="button_zdy" style="background:url('css/bt.gif') norepeat" href="#" ONCLICK="ClearPrintJob();">清理打印机缓存</button>
+	  <br>
+	
+	<br>
+	</td>
+	</tr>
+	<tr>
+   <br>
+	  <td >
+	  启动外部程序
+<br><br>
+		
+	  </td>
+	  <td width="80%">
+	  <button class="button_zdy" style="background:url('css/bt.gif') norepeat" href="#" ONCLICK="RunDate();">调整日期时间</button>
+	  <button class="button_zdy" style="background:url('css/bt.gif') norepeat" href="#" ONCLICK="external.Close('');">退出程序</button>
+	  <br>
+	  </td>
+	</tr>
+
+<tr>
+	<td >
+	  <div id="volumeValue"></div>
+	  <br>
+</td>
+	  <td  width="80%">
+	  <br>
+	滑动调整音量：
+	<br>
+	<br>
+	<input id="slider" class="easyui-slider" value="12" style="width:300px" data-options="
+				showTip: true,
+				rule: [0,'|',25,'|',50,'|',75,'|',100],
+				tipFormatter: function(value){
+					return value;
+				},
+				onChange: handleSliderChange">
+
+	<br>
+	</td>
+	</tr>
+
+</table>
+</BODY>
+</HTML>
