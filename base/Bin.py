@@ -454,8 +454,8 @@ class ClientHandler:
         print("  error code = %s" % error_code)
         print("  error text = %s" % error_text_out[0])
         print("  failed url = %s" % failed_url)
-        customErrorMessage = "My custom error message!"
-        frame.LoadUrl("data:text/html,Failed to load url [%s]" % failed_url)
+        #customErrorMessage = "My custom error message!"
+        #frame.LoadUrl("data:text/html,Failed to load url [%s]" % failed_url)
 
     def OnRendererProcessTerminated(self, browser, status):
         print("LoadHandler::OnRendererProcessTerminated()")
